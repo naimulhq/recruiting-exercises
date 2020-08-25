@@ -8,6 +8,21 @@ class InventoryAllocator:
         self.item = item # List of Strings representing the items in inventory
         self.itemAmount = itemAmount # List of integers representing the amount of a specific item. 
 
+    # This function is in charge of printing the output in the specified format
+    def printOutput(self):
+        # Construct the initial portion of the string.
+        inventoryString = "{ " + self.department + ": { "
+        # Use a for loop to construct remaining portion depending on total items in inventory
+        for i in range(len(self.item)):
+            if(i == len(self.item) - 1):
+                inventoryString = inventoryString + self.item[i] + ": " + self.itemAmount[i] + " } }"
+            else:
+                inventoryString = inventoryString + self.item[i] + ": " + self.itemAmount[i] + ", "
+        print(inventoryString)
+
+
+
+
 
 # Since the user will enter two different inputs, it would be easy to work with data by seperating into two different strings. This function fulfills this purpose.
 def obtainStringsInput(userInput):
@@ -88,8 +103,22 @@ def getInventoryWithinString(inventoryString):
     return item, value
 
 
+def extractInventoryData(inventory):
+    # This for loop will extract all the data from second input and create InventoryAllocator Objects
+    inventoryAllocatorList = [] # This list will hold all InventoryAllocator Objects
+    for i in inventory:
+        nameIndex = i.find("name:") + 5
+        endIndex = i.find(",",nameIndex)
+        warehouseName = i[nameIndex:endIndex]
+        item, amount = getInventoryWithinString(i)
+        myInventoryAllocator = InventoryAllocator(warehouseName, item, amount)
+        inventoryAllocatorList.append(myInventoryAllocator)
 
-# Main Program
+    return inventoryAllocatorList
+
+
+
+############################################################################ Main Program ###############################################################################################
 # Get user input. Necessary for testing purposes.
 # First  Total Input { apple: 1 }, [{ name: owd, inventory: { apple: 1 } }]
 # Second Total Input { apple: 10 }, [{ name: owd, inventory: { apple: 5, banana: 2 } }, { name: dm, inventory: { apple: 5 }}]
@@ -98,21 +127,14 @@ userInput = input("Enter shipment information: ") # Gathers user input
 firstInput, secondInput = obtainStringsInput(userInput) # Calls function which returns both inputs seperated into two strings
 itemNames, itemTotal = decodeFirstString(firstInput) # Calls function which returns a list of item being ordered and total number of the specific item that was ordered
 inventory = seperateSecondInput(secondInput)  # Second Input can have multiple parts. This is seperate to a list of strings
-
-# This for loop will extract all the data from second input and create InventoryAllocator Objects
-inventoryAllocatorList = [] # This list will hold all InventoryAllocator Objects
-for i in inventory:
-    nameIndex = i.find("name:") + 5
-    endIndex = i.find(",",nameIndex)
-    warehouseName = i[nameIndex:endIndex]
-    item, amount = getInventoryWithinString(i)
-    myInventoryAllocator = InventoryAllocator(warehouseName, item, amount)
-    inventoryAllocatorList.append(myInventoryAllocator)
+inventoryAllocatorList = extractInventoryData(inventory)
 
 i_inventroyAllocator = iter(inventoryAllocatorList)
+
 while True:
     try:
         myItem = next(i_inventroyAllocator)
-        print(myItem.department, myItem.item, myItem.itemAmount)
+        myItem.printOutput()
     except StopIteration:
         break
+
