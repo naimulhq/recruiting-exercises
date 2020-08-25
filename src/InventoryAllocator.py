@@ -3,10 +3,10 @@
 
 # Develop Inventory Allocator Class
 class InventoryAllocator:
-    def __init__(self):
+    def __init__(self,department, item, itemAmount):
         self.department = department # String holding the specific department
-        self.item = [] # List of Strings representing the items in inventory
-        self.itemAmount = [] # List of integers representing the amount of a specific item. 
+        self.item = item # List of Strings representing the items in inventory
+        self.itemAmount = itemAmount # List of integers representing the amount of a specific item. 
 
 
 # Since the user will enter two different inputs, it would be easy to work with data by seperating into two different strings. This function fulfills this purpose.
@@ -19,7 +19,7 @@ def obtainStringsInput(userInput):
 
     # Second, split the inputs to two different strings
     firstInput = (userInput[firstStart+1:firstStop+1]).replace(" ","")
-    secondInput = (userInput[secondStart:secondStop+1]).replace(" ", "")
+    secondInput = (userInput[secondStart+1:secondStop+1]).replace(" ", "")
 
     return firstInput,secondInput # Return the seperated strings
 
@@ -46,17 +46,73 @@ def decodeFirstString(firstInput):
     value.append(firstInput[initialIndex:currentIndex]) # This ensures last value is obtained since the loop is exited after a closing brace
     return item,value
 
+def seperateSecondInput(secondInput):
+    indexOccurences = []
+    inventory = []
+    currentIndex = 0
+
+    while(secondInput.find("},{", currentIndex) != -1):
+        indexValue = secondInput.find("},{") 
+        indexOccurences.append(indexValue)
+        currentIndex = indexValue + 2
+        inventory.append(secondInput[:indexValue])
+    if(len(indexOccurences) == 0):
+        inventory = [secondInput]
+    else:
+        inventory.append(secondInput[indexOccurences[len(indexOccurences)-1]+2:])
+
+    return inventory
+
+def getInventoryWithinString(inventoryString):
+    inventoryIndex = inventoryString.find("inventory:") + 11
+    endIndex = inventoryString.find("}", inventoryIndex)
+    inventoryString = inventoryString[inventoryIndex:endIndex]
+    item = []
+    value = []
+    initialIndex = 0 
+    currentIndex = 0
+    while(currentIndex != len(inventoryString)): # If a closing brace occurs, this indicates end of first string
+        if(inventoryString[currentIndex] == ':'): # If a colon occurs, indicates end of item name and beginning of total number of ordered item
+            item.append(inventoryString[initialIndex:currentIndex]) 
+            initialIndex = currentIndex + 1 # We want initialIndex to start after colon
+            currentIndex += 1 # We want currentIndex to start after colon
+        elif(inventoryString[currentIndex] == ","): # If a comma occurs, this indicates that there are more items being ordered.
+            value.append(inventoryString[initialIndex:currentIndex])
+            initialIndex = currentIndex + 1 # We want initialIndex to start after comma
+            currentIndex += 1 # We want currentIndex to start after comma
+        else:
+            currentIndex += 1 # If none of the above occurs, increase currentIndex by 1
+
+    value.append(inventoryString[initialIndex:currentIndex]) # This ensures last value is obtained since the loop is exited after a closing brace
+
+    return item, value
+
+
+
 # Main Program
 # Get user input. Necessary for testing purposes.
-# { apple: 1 }, [{ name: owd, inventory: { apple: 1 } }]
+# First  Total Input { apple: 1 }, [{ name: owd, inventory: { apple: 1 } }]
+# Second Total Input { apple: 10 }, [{ name: owd, inventory: { apple: 5, banana: 2 } }, { name: dm, inventory: { apple: 5 }}]
+
 userInput = input("Enter shipment information: ") # Gathers user input
 firstInput, secondInput = obtainStringsInput(userInput) # Calls function which returns both inputs seperated into two strings
 itemNames, itemTotal = decodeFirstString(firstInput) # Calls function which returns a list of item being ordered and total number of the specific item that was ordered
-print(itemNames)
-print(itemTotal)
+inventory = seperateSecondInput(secondInput)  # Second Input can have multiple parts. This is seperate to a list of strings
 
+# This for loop will extract all the data from second input and create InventoryAllocator Objects
+inventoryAllocatorList = [] # This list will hold all InventoryAllocator Objects
+for i in inventory:
+    nameIndex = i.find("name:") + 5
+    endIndex = i.find(",",nameIndex)
+    warehouseName = i[nameIndex:endIndex]
+    item, amount = getInventoryWithinString(i)
+    myInventoryAllocator = InventoryAllocator(warehouseName, item, amount)
+    inventoryAllocatorList.append(myInventoryAllocator)
 
-
-
-
-
+i_inventroyAllocator = iter(inventoryAllocatorList)
+while True:
+    try:
+        myItem = next(i_inventroyAllocator)
+        print(myItem.department, myItem.item, myItem.itemAmount)
+    except StopIteration:
+        break
