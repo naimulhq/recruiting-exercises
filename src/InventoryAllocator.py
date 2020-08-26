@@ -9,26 +9,66 @@ class InventoryAllocator:
         self.itemAmount = itemAmount # List of integers representing the amount of a specific item. 
 
     # This function is in charge of printing the output in the specified format
-    def printOutput(self):
+    def printOutput(inventoryContains):
         # Construct the initial portion of the string.
-        inventoryString = "{ " + self.department + ": { "
-        # Use a for loop to construct remaining portion depending on total items in inventory
-        for i in range(len(self.item)):
-            if(i == len(self.item) - 1):
-                inventoryString = inventoryString + self.item[i] + ": " + self.itemAmount[i] + " } }"
-            else:
-                inventoryString = inventoryString + self.item[i] + ": " + self.itemAmount[i] + ", "
+        rangeValue = 0
+        if(type(inventoryContains[1]) is list):
+            rangeValue = len(inventoryContains)
+        else:
+            rangeValue = 1
+
+        inventoryString = "{ " + inventoryContains[0] + ": { "
         print(inventoryString)
+        # Use a for loop to construct remaining portion depending on total items in inventory
+        print(rangeValue)
+        for i in range(rangeValue):
+            print(i)
+            if(i == rangeValue - 1):
+                if(rangeValue == 1):
+                    inventoryString = inventoryString + (inventoryContains[1]) + ": " + (inventoryContains[2]) + " } }"
+                else:
+                    inventoryString = inventoryString + (inventoryContains[1])[i] + ": " + (inventoryContains[2])[i] + " } }"
+            else:
+                inventoryString = inventoryString + (inventoryContains[1])[i] + ": " + (inventoryContains[2])[i] + ", "
+        print(inventoryString)
+
+    # This function checks first to see if item is in inventory
+    def isItemInInventory(self, item):
+        found = False
+        index = -1
+        for i in range(len(self.item)):
+            if(item == self.item[i]):
+                found = True
+                index = i
+        return found, index
+
+    # This function checks to see if there is enough inventory for order
+    def isEnoughInventory(self, amount, index):
+        enough = False
+        if(amount <= self.itemAmount[index]):
+            enough = True
+        return enough
+
+
 
     # This function will check inventory of multiple departments to see if order is possible
     def checkInventory(inventoryList, item, amount):
         i_inventroyAllocator = iter(inventoryList)
+        inventoryContains = []
         while True:
             try:
-                myItem = next(i_inventroyAllocator)
+                myInventory = next(i_inventroyAllocator)
+                for i in range(len(item)):
+                    found, index = myInventory.isItemInInventory(item[i])
+                    if(found == True):
+                        enough = myInventory.isEnoughInventory(amount[i], index)
+                        if(enough == True):
+                            inventoryContains.append([myInventory.department, item[i], amount[i]])
+                            break
+                
             except StopIteration:
                 break
-        return 
+        return inventoryContains
 
 
 
@@ -131,7 +171,7 @@ def extractInventoryData(inventory):
 
 ############################################################################ Main Program ###############################################################################################
 # Get user input. Necessary for testing purposes.
-# First  Total Input { apple: 1 }, [{ name: owd, inventory: { apple: 1 } }]
+# First  Total Input { apple: 1}, [{ name: owd, inventory: { apple: 1} }]
 # Second Total Input { apple: 10 }, [{ name: owd, inventory: { apple: 5, banana: 2 } }, { name: dm, inventory: { apple: 5 }}]
 
 userInput = input("Enter shipment information: ") # Gathers user input
@@ -140,6 +180,9 @@ itemNames, itemTotal = decodeFirstString(firstInput) # Calls function which retu
 inventory = seperateSecondInput(secondInput)  # Second Input can have multiple parts. This is seperate to a list of strings
 inventoryAllocatorList = extractInventoryData(inventory) 
 
-warehouses = InventoryAllocator.checkInventory(inventoryAllocatorList, itemNames, itemTotal)
+inventoryContains = InventoryAllocator.checkInventory(inventoryAllocatorList, itemNames, itemTotal)
+print(inventoryContains)
+for i in range(len(inventoryContains)):
+    InventoryAllocator.printOutput(inventoryContains[i])
 
 
