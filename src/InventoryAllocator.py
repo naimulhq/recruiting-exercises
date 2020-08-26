@@ -20,6 +20,17 @@ class InventoryAllocator:
                 inventoryString = inventoryString + self.item[i] + ": " + self.itemAmount[i] + ", "
         print(inventoryString)
 
+    # This function will check inventory of multiple departments to see if order is possible
+    def checkInventory(inventoryList, item, amount):
+        i_inventroyAllocator = iter(inventoryList)
+        while True:
+            try:
+                myItem = next(i_inventroyAllocator)
+            except StopIteration:
+                break
+        return 
+
+
 
 
 
@@ -127,14 +138,8 @@ userInput = input("Enter shipment information: ") # Gathers user input
 firstInput, secondInput = obtainStringsInput(userInput) # Calls function which returns both inputs seperated into two strings
 itemNames, itemTotal = decodeFirstString(firstInput) # Calls function which returns a list of item being ordered and total number of the specific item that was ordered
 inventory = seperateSecondInput(secondInput)  # Second Input can have multiple parts. This is seperate to a list of strings
-inventoryAllocatorList = extractInventoryData(inventory)
+inventoryAllocatorList = extractInventoryData(inventory) 
 
-i_inventroyAllocator = iter(inventoryAllocatorList)
+warehouses = InventoryAllocator.checkInventory(inventoryAllocatorList, itemNames, itemTotal)
 
-while True:
-    try:
-        myItem = next(i_inventroyAllocator)
-        myItem.printOutput()
-    except StopIteration:
-        break
 
