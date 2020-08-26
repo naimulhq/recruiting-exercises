@@ -1,6 +1,7 @@
 # Naimul Hoque
 
 
+
 # Develop Inventory Allocator Class
 class InventoryAllocator:
     def __init__(self,department, item, itemAmount):
@@ -30,7 +31,7 @@ class InventoryAllocator:
                     inventoryString = inventoryString + (inventoryContains[1])[i] + ": " + (inventoryContains[2])[i] + " } }"
             else:
                 inventoryString = inventoryString + (inventoryContains[1])[i] + ": " + (inventoryContains[2])[i] + ", "
-        print(inventoryString)
+        return inventoryString
 
     # This function checks first to see if item is in inventory
     def isItemInInventory(self, item):
@@ -112,11 +113,12 @@ def decodeFirstString(firstInput):
     value.append(firstInput[initialIndex:currentIndex]) # This ensures last value is obtained since the loop is exited after a closing brace
     return item,value
 
+# This function is designed to extract the second input which contains the warehouse and inventory
 def seperateSecondInput(secondInput):
     indexOccurences = []
     inventory = []
     currentIndex = 0
-
+    # If there exist more than one warehouse, code will be able to seperate each warehouse and store in inventory
     while(secondInput.find("},{", currentIndex) != -1):
         indexValue = secondInput.find("},{") 
         indexOccurences.append(indexValue)
@@ -129,12 +131,16 @@ def seperateSecondInput(secondInput):
 
     return inventory
 
+# Retrieves the inventory portion of the string
 def getInventoryWithinString(inventoryString):
-    inventoryIndex = inventoryString.find("inventory:") + 11
-    endIndex = inventoryString.find("}", inventoryIndex)
-    inventoryString = inventoryString[inventoryIndex:endIndex]
+
+    inventoryIndex = inventoryString.find("inventory:") + 11 # Retrieves the beginning index and add by 11 to get beginning of inventory
+    endIndex = inventoryString.find("}", inventoryIndex) # Get index of where inventory ends
+    inventoryString = inventoryString[inventoryIndex:endIndex] # Get string which contains all the inventory
+    # Item will hold item and value will hold amount of specific item
     item = []
     value = []
+    # Use a while loop to extract the item name and amount from string
     initialIndex = 0 
     currentIndex = 0
     while(currentIndex != len(inventoryString)): # If a closing brace occurs, this indicates end of first string
@@ -173,16 +179,18 @@ def extractInventoryData(inventory):
 # Get user input. Necessary for testing purposes.
 # First  Total Input { apple: 1}, [{ name: owd, inventory: { apple: 1} }]
 # Second Total Input { apple: 10 }, [{ name: owd, inventory: { apple: 5, banana: 2 } }, { name: dm, inventory: { apple: 5 }}]
+def main(userInput):
+    #userInput = input("Enter shipment information: ") # Gathers user input
+    firstInput, secondInput = obtainStringsInput(userInput) # Calls function which returns both inputs seperated into two strings
+    itemNames, itemTotal = decodeFirstString(firstInput) # Calls function which returns a list of item being ordered and total number of the specific item that was ordered
+    inventory = seperateSecondInput(secondInput)  # Second Input can have multiple parts. This is seperate to a list of strings
+    inventoryAllocatorList = extractInventoryData(inventory) 
 
-userInput = input("Enter shipment information: ") # Gathers user input
-firstInput, secondInput = obtainStringsInput(userInput) # Calls function which returns both inputs seperated into two strings
-itemNames, itemTotal = decodeFirstString(firstInput) # Calls function which returns a list of item being ordered and total number of the specific item that was ordered
-inventory = seperateSecondInput(secondInput)  # Second Input can have multiple parts. This is seperate to a list of strings
-inventoryAllocatorList = extractInventoryData(inventory) 
+    inventoryContains = InventoryAllocator.checkInventory(inventoryAllocatorList, itemNames, itemTotal)
+    print(inventoryContains)
+    for i in range(len(inventoryContains)):
+        inventoryString = InventoryAllocator.printOutput(inventoryContains[i])
 
-inventoryContains = InventoryAllocator.checkInventory(inventoryAllocatorList, itemNames, itemTotal)
-print(inventoryContains)
-for i in range(len(inventoryContains)):
-    InventoryAllocator.printOutput(inventoryContains[i])
+    return inventoryString
 
 
