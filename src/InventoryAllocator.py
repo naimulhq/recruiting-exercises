@@ -19,11 +19,8 @@ class InventoryAllocator:
             rangeValue = 1
 
         inventoryString = "{ " + inventoryContains[0] + ": { "
-        print(inventoryString)
         # Use a for loop to construct remaining portion depending on total items in inventory
-        print(rangeValue)
         for i in range(rangeValue):
-            print(i)
             if(i == rangeValue - 1):
                 if(rangeValue == 1):
                     inventoryString = inventoryString + (inventoryContains[1]) + ": " + (inventoryContains[2]) + " } }"
@@ -185,12 +182,11 @@ def main(userInput):
     itemNames, itemTotal = decodeFirstString(firstInput) # Calls function which returns a list of item being ordered and total number of the specific item that was ordered
     inventory = seperateSecondInput(secondInput)  # Second Input can have multiple parts. This is seperate to a list of strings
     inventoryAllocatorList = extractInventoryData(inventory) 
-
     inventoryContains = InventoryAllocator.checkInventory(inventoryAllocatorList, itemNames, itemTotal)
-    print(inventoryContains)
+    if(len(inventoryContains) == 0):
+        return "[]"
     for i in range(len(inventoryContains)):
         inventoryString = InventoryAllocator.printOutput(inventoryContains[i])
-
     return inventoryString
 
 
