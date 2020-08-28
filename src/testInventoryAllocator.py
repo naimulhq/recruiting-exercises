@@ -42,5 +42,10 @@ class testInventoryAllocator(unittest.TestCase):
         print("Test 10")
         result = main("{ apple: 1, banana: 2 }, [{ name: owd, inventory: { apple: 1 } }, { name: dm, inventory: { banana: 0 } }]")
         self.assertEqual(result,"[]")
+    def test_threeItemTwoWarehouse(self):
+        print("Test 11")
+        result = main("{ apple: 1, banana: 2, orange: 5 }, [{ name: owd, inventory: { apple: 1, orange: 7 } }, { name: dm, inventory: { banana: 2 } }]")
+        self.assertEqual(result,"{ owd: { apple: 1, orange: 5 } }, { dm: { banana: 2 } }")
+        
 if __name__ == '__main__':
     unittest.main()
