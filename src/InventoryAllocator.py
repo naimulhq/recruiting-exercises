@@ -13,24 +13,26 @@ class InventoryAllocator:
     def printOutput(inventoryContains):
         # Construct the initial portion of the string.
         rangeValue = 0
+        itemList = []
+        amountList = []
         if(type(inventoryContains[1]) is list):
             rangeValue = len(inventoryContains[1])
+            itemList = inventoryContains[1]
+            amountList = inventoryContains[2]
         else:
             rangeValue = 1
-
+            itemList.append(inventoryContains[1])
+            amountList.append(inventoryContains[2])
         inventoryString = "{ " + inventoryContains[0] + ": { "
-        print(inventoryString)
-        print(rangeValue)
-        print(inventoryContains[1])
         # Use a for loop to construct remaining portion depending on total items in inventory
         for i in range(rangeValue):
             if(i == rangeValue - 1):
                 if(rangeValue == 1):
-                    inventoryString = inventoryString + (inventoryContains[1][0]) + ": " + (inventoryContains[2][0]) + " } }"
+                    inventoryString = inventoryString + (itemList[0]) + ": " + (amountList[0]) + " } }"
                 else:
-                    inventoryString = inventoryString + (inventoryContains[1])[i] + ": " + (inventoryContains[2])[i] + " } }"
+                    inventoryString = inventoryString + itemList[i] + ": " + amountList[i] + " } }"
             else:
-                inventoryString = inventoryString + (inventoryContains[1])[i] + ": " + (inventoryContains[2])[i] + ", "
+                inventoryString = inventoryString + itemList[i] + ": " + amountList[i] + ", "
         return inventoryString
 
     # This function checks first to see if item is in inventory
@@ -65,17 +67,27 @@ class InventoryAllocator:
                     if(found == True):
                         enough = myInventory.isEnoughInventory(amount[i], index)
                         if(enough == True):
-                            inventoryHas[i] = True
+                            if(len(inventoryContains) == 0):
+                                inventoryHas[i] = True
+                                inventoryContains.append([myInventory.department, [item[i]], [amount[i]]])
+                            else:
+                                for j in range(len(inventoryContains)):
+                                    if(inventoryContains[j][0] == myInventory.department):
+                                        inventoryHas[i] = True
+                                        inventoryContains[j][1].append(item[i])
+                                        inventoryContains[j][2].append(amount[i])
+                                    else:
+                                        inventoryHas[i] = True
+                                        inventoryContains.append([myInventory.department, item[i], amount[i]])
                 if(all(inventoryHas) == True):
-                    inventoryContains.append([myInventory.department, item, amount])
                     break
             except StopIteration:
                 break
-        return inventoryContains
 
-
-
-
+        if(all(inventoryHas) == False):
+            return []
+        else:
+            return inventoryContains
 
 
 # Since the user will enter two different inputs, it would be easy to work with data by seperating into two different strings. This function fulfills this purpose.
@@ -188,12 +200,17 @@ def main(userInput):
     inventory = seperateSecondInput(secondInput)  # Second Input can have multiple parts. This is seperate to a list of strings
     inventoryAllocatorList = extractInventoryData(inventory) 
     inventoryContains = InventoryAllocator.checkInventory(inventoryAllocatorList, itemNames, itemTotal)
-    print(inventoryContains)
+    inventoryString = []
     if(len(inventoryContains) == 0):
         return "[]"
     for i in range(len(inventoryContains)):
-        inventoryString = InventoryAllocator.printOutput(inventoryContains[i])
-    print("Inventory: " + inventoryString)
-    return inventoryString
+        inventoryString.append(InventoryAllocator.printOutput(inventoryContains[i]))
+    myString = ""
+    for i in range(len(inventoryString)):
+        if((len(inventoryString) > 0 and i == 0) or (len(inventoryString) == i-1)):
+            myString = myString + inventoryString[i]
+        else:
+            myString = myString + ", " + inventoryString[i]
 
-
+    print(myString)
+    return myString
