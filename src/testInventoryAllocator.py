@@ -13,7 +13,7 @@ class testInventoryAllocator(unittest.TestCase):
     def test_oneItemTwoWarehouseSplit(self):
         print("Test 3")
         result = main("{ apple: 10 }, [{ name: owd, inventory: { apple: 5 } }, { name: dm, inventory: { apple: 5 }}]")
-        self.assertEqual(result,"[{ dm: { apple: 5 }}, { owd: { apple: 5 } }]")
+        self.assertEqual(result,"{ owd: { apple: 5 } }, { dm: { apple: 5 } }")
     def test_perfectTwoItemOneWarehouse(self):
         print("Test 4")
         result = main("{ apple: 1, banana: 2 }, [{ name: owd, inventory: { apple: 1, banana: 2 } }]")
@@ -49,6 +49,14 @@ class testInventoryAllocator(unittest.TestCase):
     def test_threeItemTwoWarehouseNotEnough(self):
         print("Test 11")
         result = main("{ apple: 1, banana: 2, orange: 5 }, [{ name: owd, inventory: { apple: 1, orange: 3 } }, { name: dm, inventory: { banana: 2 } }]")
+        self.assertEqual(result,"[]")
+    def test_twoItemTwoWarehouseSplit(self):
+        print("Test 12")
+        result = main("{ apple: 5, banana: 7}, [{ name: owd, inventory: { apple: 5, banana: 3, orange: 3 } }, { name: dm, inventory: { banana: 4 } }]")
+        self.assertEqual(result,"{ owd: { apple: 5, banana: 3 } }, { dm: { banana: 4 } }")
+    def test_twoItemTwoWarehouseSplitNotEnough(self):
+        print("Test 13")
+        result = main("{ apple: 5, banana: 7}, [{ name: owd, inventory: { apple: 5, banana: 3, orange: 3 } }, { name: dm, inventory: { banana: 3 } }]")
         self.assertEqual(result,"[]")
 if __name__ == '__main__':
     unittest.main()
