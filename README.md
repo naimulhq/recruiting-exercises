@@ -1,1 +1,1 @@
-# recruiting-exercises
+# Inventory Allocator Exercise by Naimul Hoque
