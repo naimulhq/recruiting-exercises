@@ -68,6 +68,7 @@ class InventoryAllocator:
                             inventoryHas[i] = True
                 if(all(inventoryHas) == True):
                     inventoryContains.append([myInventory.department, item, amount])
+                    break
             except StopIteration:
                 break
         return inventoryContains
