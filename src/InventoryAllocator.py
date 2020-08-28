@@ -14,16 +14,19 @@ class InventoryAllocator:
         # Construct the initial portion of the string.
         rangeValue = 0
         if(type(inventoryContains[1]) is list):
-            rangeValue = len(inventoryContains)
+            rangeValue = len(inventoryContains[1])
         else:
             rangeValue = 1
 
         inventoryString = "{ " + inventoryContains[0] + ": { "
+        print(inventoryString)
+        print(rangeValue)
+        print(inventoryContains[1])
         # Use a for loop to construct remaining portion depending on total items in inventory
         for i in range(rangeValue):
             if(i == rangeValue - 1):
                 if(rangeValue == 1):
-                    inventoryString = inventoryString + (inventoryContains[1]) + ": " + (inventoryContains[2]) + " } }"
+                    inventoryString = inventoryString + (inventoryContains[1][0]) + ": " + (inventoryContains[2][0]) + " } }"
                 else:
                     inventoryString = inventoryString + (inventoryContains[1])[i] + ": " + (inventoryContains[2])[i] + " } }"
             else:
@@ -53,6 +56,7 @@ class InventoryAllocator:
     def checkInventory(inventoryList, item, amount):
         i_inventroyAllocator = iter(inventoryList)
         inventoryContains = []
+        inventoryHas = [False]*len(item) # This will determine if inventory is complete
         while True:
             try:
                 myInventory = next(i_inventroyAllocator)
@@ -61,9 +65,9 @@ class InventoryAllocator:
                     if(found == True):
                         enough = myInventory.isEnoughInventory(amount[i], index)
                         if(enough == True):
-                            inventoryContains.append([myInventory.department, item[i], amount[i]])
-                            break
-                
+                            inventoryHas[i] = True
+                if(all(inventoryHas) == True):
+                    inventoryContains.append([myInventory.department, item, amount])
             except StopIteration:
                 break
         return inventoryContains
@@ -183,10 +187,12 @@ def main(userInput):
     inventory = seperateSecondInput(secondInput)  # Second Input can have multiple parts. This is seperate to a list of strings
     inventoryAllocatorList = extractInventoryData(inventory) 
     inventoryContains = InventoryAllocator.checkInventory(inventoryAllocatorList, itemNames, itemTotal)
+    print(inventoryContains)
     if(len(inventoryContains) == 0):
         return "[]"
     for i in range(len(inventoryContains)):
         inventoryString = InventoryAllocator.printOutput(inventoryContains[i])
+    print("Inventory: " + inventoryString)
     return inventoryString
 
 
