@@ -47,20 +47,24 @@ class testInventoryAllocator(unittest.TestCase):
         result = main("{ apple: 1, banana: 2, orange: 5 }, [{ name: owd, inventory: { apple: 1, orange: 7 } }, { name: dm, inventory: { banana: 2 } }]")
         self.assertEqual(result,"{ owd: { apple: 1, orange: 5 } }, { dm: { banana: 2 } }")
     def test_threeItemTwoWarehouseNotEnough(self):
-        print("Test 11")
+        print("Test 12")
         result = main("{ apple: 1, banana: 2, orange: 5 }, [{ name: owd, inventory: { apple: 1, orange: 3 } }, { name: dm, inventory: { banana: 2 } }]")
         self.assertEqual(result,"[]")
     def test_twoItemTwoWarehouseSplit(self):
-        print("Test 12")
+        print("Test 13")
         result = main("{ apple: 5, banana: 7}, [{ name: owd, inventory: { apple: 5, banana: 3, orange: 3 } }, { name: dm, inventory: { banana: 4 } }]")
         self.assertEqual(result,"{ owd: { apple: 5, banana: 3 } }, { dm: { banana: 4 } }")
     def test_twoItemTwoWarehouseSplitNotEnough(self):
-        print("Test 13")
+        print("Test 14")
         result = main("{ apple: 5, banana: 7}, [{ name: owd, inventory: { apple: 5, banana: 3, orange: 3 } }, { name: dm, inventory: { banana: 3 } }]")
         self.assertEqual(result,"[]")
     def test_complexTest1(self):
-        print("Test 13")
+        print("Test 15")
         result = main("{ apple: 5, banana: 7, orange:5, pomegranate: 3, mango: 2}, [{ name: owd, inventory: { apple: 5, banana: 3, orange: 3 } }, { name: dm, inventory: { banana: 4, orange: 2 } }, { name: ic, inventory: { pomegranate: 3, mango: 2 } }]")
         self.assertEqual(result,"{ owd: { apple: 5, banana: 3, orange: 3 } }, { dm: { banana: 4, orange: 2 } }, { ic: { pomegranate: 3, mango: 2 } }")
+    def test_complexTest2(self):
+        print("Test 16")
+        result = main("{ apple: 5, banana: 7, orange:5, pomegranate: 3, mango: 2}, [{ name: owd, inventory: { apple: 5, banana: 3, orange: 3 } }, { name: dm, inventory: { banana: 4, orange: 2, pomegranate: 3, mango: 2 } }, { name: ic, inventory: { pomegranate: 3, mango: 2 } }]")
+        self.assertEqual(result, "{ owd: { apple: 5, banana: 3, orange: 3 } }, { dm: { banana: 4, orange: 2, pomegranate: 3, mango: 2 } }")
 if __name__ == '__main__':
     unittest.main()
