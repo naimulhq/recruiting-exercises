@@ -58,5 +58,9 @@ class testInventoryAllocator(unittest.TestCase):
         print("Test 13")
         result = main("{ apple: 5, banana: 7}, [{ name: owd, inventory: { apple: 5, banana: 3, orange: 3 } }, { name: dm, inventory: { banana: 3 } }]")
         self.assertEqual(result,"[]")
+    def test_complexTest1(self):
+        print("Test 13")
+        result = main("{ apple: 5, banana: 7, orange:5, pomegranate: 3, mango: 2}, [{ name: owd, inventory: { apple: 5, banana: 3, orange: 3 } }, { name: dm, inventory: { banana: 4, orange: 2 } }, { name: ic, inventory: { pomegranate: 3, mango: 2 } }]")
+        self.assertEqual(result,"{ owd: { apple: 5, banana: 3, orange: 3 } }, { dm: { banana: 4, orange: 2 } }, { ic: { pomegranate: 3, mango: 2 } }")
 if __name__ == '__main__':
     unittest.main()
