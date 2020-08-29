@@ -1,7 +1,5 @@
 # Naimul Hoque
 
-
-
 # Develop Inventory Allocator Class
 class InventoryAllocator:
     def __init__(self,department, item, itemAmount):
@@ -48,24 +46,30 @@ class InventoryAllocator:
     # This function checks to see if there is enough inventory for order
     def isEnoughInventory(self, amount, index):
         enough = False
-        if(amount <= self.itemAmount[index]):
+        if(int(amount) <= int(self.itemAmount[index])):
             enough = True
         return enough
-
-
 
     # This function will check inventory of multiple departments to see if order is possible
     def checkInventory(inventoryList, item, amount):
         i_inventroyAllocator = iter(inventoryList)
         inventoryContains = []
+        containDept = False
         inventoryHas = [False]*len(item) # This will determine if inventory is complete
         while True:
             try:
                 myInventory = next(i_inventroyAllocator)
+                print(myInventory.department, myInventory.item, myInventory.itemAmount)
                 for i in range(len(item)):
+                    print(i)
+                    containDept = False
                     found, index = myInventory.isItemInInventory(item[i])
+                    print(found)
+                    print("Inventory: ")
+                    print(inventoryContains)
                     if(found == True):
                         enough = myInventory.isEnoughInventory(amount[i], index)
+                        print(enough)
                         if(enough == True):
                             if(len(inventoryContains) == 0):
                                 inventoryHas[i] = True
@@ -73,17 +77,32 @@ class InventoryAllocator:
                             else:
                                 for j in range(len(inventoryContains)):
                                     if(inventoryContains[j][0] == myInventory.department):
+                                        print("In loop")
+                                        print(inventoryContains[j][0], myInventory.department)
+                                        containDept = True
                                         inventoryHas[i] = True
                                         inventoryContains[j][1].append(item[i])
                                         inventoryContains[j][2].append(amount[i])
+                                if(containDept == False):
+                                    print("I should be here")
+                                    inventoryHas[i] = True
+                                    inventoryContains.append([myInventory.department, [item[i]], [amount[i]]])
+                        else:
+                            if(len(inventoryContains) == 0):
+                                inventoryContains.append([myInventory.department, [item[i]], [myInventory.itemAmount[index]]])
+                            else:
+                                for j in range(len(inventoryContains)):
+                                    if(inventoryContains[j][0] == myInventory.department):
+                                        print("I am here")
+                                        inventoryContains[j][1].append(item[i])
+                                        inventoryContains[j][2].append(myInventory.itemAmount[index])
                                     else:
-                                        inventoryHas[i] = True
-                                        inventoryContains.append([myInventory.department, item[i], amount[i]])
+                                        inventoryContains.append([myInventory.department, item[i], myInventory.itemAmount[index]])
+                            amount[i] = str(int(amount[i]) - int(myInventory.itemAmount[index]))
                 if(all(inventoryHas) == True):
                     break
             except StopIteration:
                 break
-
         if(all(inventoryHas) == False):
             return []
         else:
@@ -134,15 +153,14 @@ def seperateSecondInput(secondInput):
     currentIndex = 0
     # If there exist more than one warehouse, code will be able to seperate each warehouse and store in inventory
     while(secondInput.find("},{", currentIndex) != -1):
-        indexValue = secondInput.find("},{") 
+        indexValue = secondInput.find("},{", currentIndex) 
         indexOccurences.append(indexValue)
+        inventory.append(secondInput[currentIndex:indexValue])
         currentIndex = indexValue + 2
-        inventory.append(secondInput[:indexValue])
     if(len(indexOccurences) == 0):
         inventory = [secondInput]
     else:
         inventory.append(secondInput[indexOccurences[len(indexOccurences)-1]+2:])
-
     return inventory
 
 # Retrieves the inventory portion of the string
@@ -201,6 +219,8 @@ def main(userInput):
     inventoryAllocatorList = extractInventoryData(inventory) 
     inventoryContains = InventoryAllocator.checkInventory(inventoryAllocatorList, itemNames, itemTotal)
     inventoryString = []
+    print("Inventorty Contains")
+    print(inventoryContains)
     if(len(inventoryContains) == 0):
         return "[]"
     for i in range(len(inventoryContains)):
@@ -211,6 +231,4 @@ def main(userInput):
             myString = myString + inventoryString[i]
         else:
             myString = myString + ", " + inventoryString[i]
-
-    print(myString)
     return myString
