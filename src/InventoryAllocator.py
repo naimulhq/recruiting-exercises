@@ -97,10 +97,11 @@ class InventoryAllocator:
                             else:
                                 for j in range(len(inventoryContains)):
                                     if(inventoryContains[j][0] == myInventory.warehouse):
+                                        containDept = True
                                         inventoryContains[j][1].append(item[i])
                                         inventoryContains[j][2].append(myInventory.itemAmount[index])
-                                    else:
-                                        inventoryContains.append([myInventory.warehouse, item[i], myInventory.itemAmount[index]])
+                                if(containDept == False):
+                                    inventoryContains.append([myInventory.warehouse, [item[i]], [myInventory.itemAmount[index]]])
                             # This changes the amount in the inventory. This is necessary to determine if split is possible
                             amount[i] = str(int(amount[i]) - int(myInventory.itemAmount[index]))
                 # If the order has been completed, break loop to get least amount of warehouses
@@ -236,5 +237,4 @@ def main(userInput):
             myString = myString + inventoryString[i]
         else:
             myString = myString + ", " + inventoryString[i]
-
     return myString
