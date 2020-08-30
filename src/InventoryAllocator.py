@@ -67,8 +67,6 @@ class InventoryAllocator:
                     # Checks if item is warehouse and gives index
                     containDept = False
                     found, index = myInventory.isItemInInventory(item[i])
-                    print("Inventory: ")
-                    print(inventoryContains)
                     # If found, check if there is enough of that inventory. Else go to next item
                     if(found == True):
                         enough = myInventory.isEnoughInventory(amount[i], index)
