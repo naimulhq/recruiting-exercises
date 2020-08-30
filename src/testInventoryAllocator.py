@@ -66,9 +66,29 @@ class testInventoryAllocator(unittest.TestCase):
         print("Test 16")
         result = main("{ apple: 5, banana: 7, orange:5, pomegranate: 3, mango: 2}, [{ name: owd, inventory: { apple: 5, banana: 3, orange: 3 } }, { name: dm, inventory: { banana: 4, orange: 2, pomegranate: 3, mango: 2 } }, { name: ic, inventory: { pomegranate: 3, mango: 2 } }]")
         self.assertEqual(result, "{ owd: { apple: 5, banana: 3, orange: 3 } }, { dm: { banana: 4, orange: 2, pomegranate: 3, mango: 2 } }")
-    def test_complexTest3(self):
+    def test_complexTest3(self): # Checks for two items in three warehouse. The second warehouse is omitted since it can't complete shipment but first and third warehouse combined complete shipment
         print("Test 17")
         result = main("{ apple: 5, orange: 3}, [{ name: owd, inventory: { apple: 5 } }, { name: dm, inventory: { bread: 5 } }, { name: ic, inventory: { orange: 3 } }]")
         self.assertEqual(result, "{ owd: { apple: 5 } }, { ic: { orange: 3 } }")
+    def test_formatError1(self): # Empty order
+        print("Test 18")
+        result = main("{}, [{ name: owd, inventory: { apple: 5 } }]")
+        self.assertEqual(result, "[]")
+    def test_formatError2(self): # Empty warehouse
+        print("Test 19")
+        result = main("{apple: 1}, []")
+        self.assertEqual(result, "[]")
+    def test_formatError3(self): # Missing braces around order
+        print("Test 20")
+        result = main("apple 1, banana 2, [{ name: owd, inventory: { apple: 5 } }]")
+        self.assertEqual(result, "[]")
+    def test_formatError4(self): # Missing brackets around warehouses
+        print("Test 21")
+        result = main("{apple 1, banana 2}, { name: owd, inventory: { apple: 5 } }")
+        self.assertEqual(result, "[]")
+    def test_formatError4(self): # Missing comma between different warehouses
+        print("Test 21")
+        result = main("{apple 1, banana 2}, [{ name: owd, inventory: { apple: 1 } }{ name: dm, inventory: { banana: 2 } }]")
+        self.assertEqual(result, "[]")
 if __name__ == '__main__':
     unittest.main()
