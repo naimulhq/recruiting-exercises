@@ -86,9 +86,13 @@ class testInventoryAllocator(unittest.TestCase):
         print("Test 21")
         result = main("{apple 1, banana 2}, { name: owd, inventory: { apple: 5 } }")
         self.assertEqual(result, "[]")
-    def test_formatError4(self): # Missing comma between different warehouses
-        print("Test 21")
+    def test_formatError5(self): # Missing comma between different warehouses
+        print("Test 22")
         result = main("{apple 1, banana 2}, [{ name: owd, inventory: { apple: 1 } }{ name: dm, inventory: { banana: 2 } }]")
         self.assertEqual(result, "[]")
+    def test_finalTest(self): # Largest Test with multiple warehouses and multiple items
+        print("Largest Test")
+        result = main("{ apple: 5, banana: 7, orange:5, pomegranate: 3, mango: 2, pear: 11, jackfruit: 13, pineapple: 5, spinach: 3, cilantro: 5}, [{ name: owd, inventory: { apple: 5, orange: 3 } }, { name: dm, inventory: { PS4: 2 } }, { name: ic, inventory: { banana: 7, orange: 2, jackfruit: 10 } }, { name: fd, inventory: { jackfruit: 3, PS4: 1 } }, { name: df, inventory: { pomegranate: 3, mango: 2, pear: 11 } }, { name: food, inventory: { pineapple: 3, spinach: 3 } }, { name: foodieee, inventory: { pineapple: 2, cilantro: 5 } }]")
+        self.assertEqual(result,"{ owd: { apple: 5, orange: 3 } }, { ic: { banana: 7, orange: 2, jackfruit: 10 } }, { fd: { jackfruit: 3 } }, { df: { pomegranate: 3, mango: 2, pear: 11 } }, { food: { pineapple: 3, spinach: 3 } }, { foodieee: { pineapple: 2, cilantro: 5 } }")
 if __name__ == '__main__':
     unittest.main()
