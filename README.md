@@ -10,9 +10,9 @@ The input must be given in the following format in order for the program to extr
 
 The Inventory Allocator has been tested for a variety of cases using the unittest library in Python and has proven to output the cheapest shipment necessary and handle splits across warehouses. It is completely possible that I am missing certain cases that I am not aware of. However, out of the 17 tests that I have designed, each test has passed. An example of a test that I have run is the following:
 
-Input: '{ apple: 5, banana: 7, orange:5, pomegranate: 3, mango: 2}, [{ name: owd, inventory: { apple: 5, banana: 3, orange: 3 } }, { name: dm, inventory: { banana: 4, orange: 2 } }, { name: ic, inventory: { pomegranate: 3, mango: 2 } }]'
+Input: `{ apple: 5, banana: 7, orange: 5, pomegranate: 3, mango: 2}, [{ name: owd, inventory: { apple: 5, banana: 3, orange: 3 } }, { name: dm, inventory: { banana: 4, orange: 2 } }, { name: ic, inventory: { pomegranate: 3, mango: 2 } }]`
 
-Output: '{ owd: { apple: 5, banana: 3, orange: 3 } }, { dm: { banana: 4, orange: 2 } }, { ic: { pomegranate: 3, mango: 2 } }'
+Output: `{ owd: { apple: 5, banana: 3, orange: 3 } }, { dm: { banana: 4, orange: 2 } }, { ic: { pomegranate: 3, mango: 2 } }`
 
 
 
